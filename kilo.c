@@ -395,7 +395,7 @@ void editor_draw_rows(struct abuf *ab) {
             if (E.numrows == 0 && y == E.screenrows / 3) {
                 char welcome[81];
                 int welcomelen = snprintf(welcome, sizeof(welcome),
-                "delfis minimal editor, a clone of https://github.com/antirez/kilo -- version %s", EDITOR_VER);
+                "delfi's kilo, a modified clone of https://github.com/antirez/kilo -- version %s", EDITOR_VER);
                 if (welcomelen > E.screencols) welcomelen = E.screencols;
                     int padding = (E.screencols - welcomelen) / 2;
                 if (padding) {
