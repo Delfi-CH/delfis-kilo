@@ -17,65 +17,9 @@
 #include <stdarg.h>
 #include <fcntl.h>
 
-// defines
+#include "kilo.h"
 
-#define CTRL_KEY(k) ((k) & 0x1f)
-
-#define EDITOR_VER "0.1"
-#define EDITOR_TAB_STOP 8
-#define EDITOR_QUIT_TIMES 3
-
-// data
-
-typedef struct erow {
-    int size;
-    char *chars;
-    int rsize;
-    char *render;
-} erow;
-struct editorConfig {
-    int cx, cy;
-    int rx;
-    int rowoff;
-    int coloff;
-    int screenrows;
-    int screencols;
-    int numrows;
-    erow *row;  
-    char statusmsg[80];
-    time_t statusmsg_time;
-    struct termios orig_termios;
-    char *filename;
-    int dirty;
-};
 struct editorConfig E;
-
-enum editorKey {
-    BACKSPACE = 127,
-    ARROW_LEFT = 1000,
-    ARROW_RIGHT,
-    ARROW_UP,
-    ARROW_DOWN,
-    DEL_KEY,
-    HOME_KEY,
-    END_KEY,
-    PAGE_UP,
-    PAGE_DOWN
-};
-
-// implicits
-
-void editor_set_statusmsg(const char *fmt, ...);
-void editor_save();
-void editor_del_char();
-void editor_insert_char(int c);
-void editor_row_insert_char(erow *row, int at, int c);
-void editor_row_del_char(erow *row, int at);
-void editor_insert_newline();
-void editor_clear();
-char *editor_prompt(char *prompt, void (*callback)(char *, int));
-void editor_del_row(int at);
-void editor_find();
 
 // terminal
 
@@ -182,12 +126,6 @@ int get_window_size(int *rows, int *cols) {
 }
 
 // buffer
-struct abuf {
-    char *b;
-    int len;
-};
-
-#define ABUF_INIT {NULL, 0}
 
 void ab_append(struct abuf *ab, const char *s, int len) {
     char *new = realloc(ab->b, ab->len + len);
