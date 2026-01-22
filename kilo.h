@@ -3,6 +3,7 @@
 
 #include <termios.h>
 #include <time.h>
+#include "delfi.h"
 
 /* macros */
 #define CTRL_KEY(k) ((k) & 0x1f)
@@ -29,6 +30,7 @@ struct editorConfig {
     struct termios orig_termios;
     char *filename;
     int dirty;
+    struct runfile R;
 };
 
 extern struct editorConfig E;
@@ -103,6 +105,10 @@ void editor_open(char *filename);
 // Find
 void editor_find_callback(char *query, int key);
 void editor_find(void);
+
+// Exec
+
+void editor_exec_runfile(void);
 
 // INIT
 void init(void);

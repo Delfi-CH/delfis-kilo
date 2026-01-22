@@ -18,6 +18,7 @@
 #include <fcntl.h>
 
 #include "kilo.h"
+#include "delfi.h"
 
 struct editorConfig E;
 
@@ -239,6 +240,9 @@ void editor_process() {
             break;
         case CTRL_KEY('s'):
             editor_save();
+            break;
+        case CTRL_KEY('r'):
+            editor_exec_runfile();
             break;
         default:
             editor_insert_char(c);
@@ -643,6 +647,21 @@ void editor_find() {
     }
 }
 
+// exec
+
+void editor_exec_runfile(void) {  
+    parse_runfile();
+    if (!E.R.name || !E.R.bin || !E.R.argv) {
+        editor_set_statusmsg("Invalid runfile at .dk/run.ini!");
+        return;
+    }
+    int exec = exec_runfile();
+    if (exec == 0) {
+        editor_set_statusmsg("Sucessfully executed action %s", E.R.name);
+    } else {
+        editor_set_statusmsg("Failed to execute action %s, with command %s", E.R.name, E.R.argv);
+    }
+}
 
 // init
 
@@ -658,6 +677,10 @@ void init() {
     E.statusmsg[0] = '\0';
     E.statusmsg_time = 0;
     E.dirty = 0;
+
+    E.R.bin = NULL;
+    E.R.name = NULL;
+    E.R.argv = NULL;
 
     if (get_window_size(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
     E.screenrows -= 2;
