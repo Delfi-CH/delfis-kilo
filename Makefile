@@ -22,8 +22,8 @@ preprocess: src/kilo.c src/delfi.c
 .PHONY: clean
 
 clean: dk
-	rm dk
-	rm src/delfi.i
-	rm src/delfi.s
-	rm src/kilo.i
-	rm src/kilo.s
+	rm -f dk
+	rm -f src/delfi.i
+	rm -f src/delfi.s
+	rm -f src/kilo.i
+	rm -f src/kilo.s
