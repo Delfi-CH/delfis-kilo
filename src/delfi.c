@@ -81,9 +81,9 @@ int exec_runfile(void) {
     // Redirect stdin
     posix_spawn_file_actions_adddup2(&file_actions, devnull, STDIN_FILENO);
     // Redirect stdout
-    posix_spawn_file_actions_adddup2(&file_actions, devnull, STDOUT_FILENO);
+    //posix_spawn_file_actions_adddup2(&file_actions, devnull, STDOUT_FILENO);
     // Redirect stderr
-    posix_spawn_file_actions_adddup2(&file_actions, devnull, STDERR_FILENO);
+    //posix_spawn_file_actions_adddup2(&file_actions, devnull, STDERR_FILENO);
 
 
     char *cmd = E.R.argv;
@@ -97,13 +97,6 @@ int exec_runfile(void) {
         token = strtok(NULL, " ");
     }
     argv[i] = NULL;
-
-    if (access(E.R.bin, X_OK) != 0) {
-        char *tmp = find_bin_in_path(E.R.bin);
-        if (!tmp) {
-            die("bin not found");
-        }
-    }
 
     pid_t pid;
     int status = posix_spawnp(&pid, E.R.bin, &file_actions, NULL, argv, environ);
@@ -123,37 +116,4 @@ int exec_runfile(void) {
         }
     }
     return 1;
-}
-
-char *find_bin_in_path(const char *binname) {
-    if (!binname) return NULL;
-
-    char *path = getenv("PATH");
-    if (!path) return NULL;
-
-    char *path_dup = strdup(path);
-    if (!path_dup) return NULL;
-
-    char *saveptr;
-    char *dir = strtok_r(path_dup, ":", &saveptr);
-    while (dir != NULL) {
-        size_t len = strlen(dir) + 1 + strlen(binname) + 1;
-        char *fullpath = malloc(len);
-        if (!fullpath) {
-            free(path_dup);
-            return NULL;
-        }
-        snprintf(fullpath, len, "%s/%s", dir, binname);
-
-        if (access(fullpath, X_OK) == 0) {
-            free(path_dup);
-            return fullpath;
-        }
-
-        free(fullpath);
-        dir = strtok_r(NULL, ":", &saveptr); 
-    }
-
-    free(path_dup);
-    return NULL;
 }
